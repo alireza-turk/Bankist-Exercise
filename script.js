@@ -75,10 +75,11 @@ const dateNow=(splitChar='/')=>{
 // App Functions
 const getData=function (account){
   const currency=account.currencyBalance;
+  const movementArr =account.movements;
   return{
     firstName:`${account.owner.split(' ')[0]}👋`,
-    balance(){
-      let balance=account.movements.reduce((acc,value)=>acc+value,0);
+    balance(arr=movementArr){return this.changeCurrency(arr.reduce((acc,value)=>acc+value,0));},
+    changeCurrency(balance){
       switch (currency) {
         case 'GBP':
           balance*=0.79;
@@ -89,6 +90,21 @@ const getData=function (account){
       }
       return balance.toFixed(2)+currencies.get(currency);
     },
+    sumIn(){
+      return this.balance(movementArr.filter(value=>value>0));
+    },
+    sumOut(){
+      return this.balance(movementArr.filter(value=>value<0)).slice(1);
+    },
+    sumInterest(){
+      return this.changeCurrency(movementArr
+          .filter(mov => mov > 0)
+          .map(deposit => (deposit * account.interestRate) / 100)
+          .filter((int) => {
+            return int >= 1;
+          })
+          .reduce((acc, int) => acc + int, 0))
+    }
   }
 }
 
@@ -97,3 +113,6 @@ const currentUser=getData(accounts.get('js'));
 labelBalance.innerHTML=currentUser.balance();
 labelDate.innerHTML= dateNow();
 labelWelcome.innerHTML=`Welcome back, ${currentUser.firstName}`;
+labelSumIn.innerHTML=currentUser.sumIn();
+labelSumOut.innerHTML=currentUser.sumOut();
+labelSumInterest.innerHTML=currentUser.sumInterest();
