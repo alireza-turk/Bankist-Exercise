@@ -76,6 +76,7 @@ const dateNow=(splitChar='/')=>{
 const getData=function (account){
   const currency=account.currencyBalance;
   return{
+    firstName:`${account.owner.split(' ')[0]}👋`,
     balance(){
       let balance=account.movements.reduce((acc,value)=>acc+value,0);
       switch (currency) {
@@ -87,10 +88,12 @@ const getData=function (account){
           break;
       }
       return balance.toFixed(2)+currencies.get(currency);
-    }
+    },
   }
 }
 
-//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-labelBalance.innerHTML=getData(accounts.get('js')).balance();
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ Event Scripts ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+const currentUser=getData(accounts.get('js'));
+labelBalance.innerHTML=currentUser.balance();
 labelDate.innerHTML= dateNow();
+labelWelcome.innerHTML=`Welcome back, ${currentUser.firstName}`;
