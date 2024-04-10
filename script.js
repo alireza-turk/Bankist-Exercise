@@ -64,3 +64,22 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 // App Functions
+const getData=function (account){
+  const currency=account.currencyBalance;
+  return{
+    balance(){
+      let balance=account.movements.reduce((acc,value)=>acc+=value,0);
+      switch (currency) {
+        case 'GBP':
+          balance*=0.79;
+          break;
+        case 'EUR':
+          balance*=0.92;
+          break;
+      }
+      return balance.toFixed(2)+currencies.get(currency);
+    },
+
+  }
+}
+labelBalance.innerHTML=getData(accounts.get('js')).balance();
