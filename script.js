@@ -11,6 +11,7 @@
       owner: 'Jonas Schmedtmann',
       currencyBalance:'USD',
       movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+      movementDates:['10/03/2024','30/03/2020','17/02/2022','09/02/2024','05/01/2024','08/03/2024','10/02/2020','01/03/2000'],
       interestRate: 1.2, // %
       pin: 1111
     }],
@@ -18,6 +19,7 @@
       owner: 'Jessica Davis',
       currencyBalance:'USD',
       movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
+      movementDates:['10/03/2024','30/03/2020','17/02/2020','09/02/2024','05/11/2024','08/03/2024','12/02/2020','01/03/2000'],
       interestRate: 1.5,
       pin: 2222,
     }],
@@ -25,6 +27,7 @@
       owner: 'Steven Thomas Williams',
       currencyBalance:'USD',
       movements: [200, -200, 340, -300, -20, 50, 400, -460],
+      movementDates:['10/03/2024','30/03/2020','17/02/2022','09/02/2024','05/01/2024','08/03/2024','10/02/2020','01/03/2000'],
       interestRate: 0.7,
       pin: 3333,
     }]
@@ -32,6 +35,7 @@
       owner: 'Sarah Smith',
       currencyBalance:'USD',
       movements: [430, 1000, 700, 50, 90],
+      movementDates:['10/03/2024','30/03/2020','09/02/2024','05/01/2024','01/03/2000'],
       interestRate: 1,
       pin: 4444,
     }]
@@ -39,7 +43,7 @@
 
 // Elements
 const labelWelcome = document.querySelector('.welcome');
-const labelDate = document.querySelector('.date');
+const labelDate = document.querySelector('.balance__date .date');
 const labelBalance = document.querySelector('.balance__value');
 const labelSumIn = document.querySelector('.summary__value--in');
 const labelSumOut = document.querySelector('.summary__value--out');
@@ -63,12 +67,17 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+const dateNow=(splitChar='/')=>{
+  const date=new Date();
+  return date.getDate().toString().padStart(2,'0')+splitChar+date.getMonth().toString().padStart(2,'0')+splitChar+date.getFullYear();
+};
+
 // App Functions
 const getData=function (account){
   const currency=account.currencyBalance;
   return{
     balance(){
-      let balance=account.movements.reduce((acc,value)=>acc+=value,0);
+      let balance=account.movements.reduce((acc,value)=>acc+value,0);
       switch (currency) {
         case 'GBP':
           balance*=0.79;
@@ -78,8 +87,10 @@ const getData=function (account){
           break;
       }
       return balance.toFixed(2)+currencies.get(currency);
-    },
-
+    }
   }
 }
+
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 labelBalance.innerHTML=getData(accounts.get('js')).balance();
+labelDate.innerHTML= dateNow();
