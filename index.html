@@ -1,39 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="shortcut icon" type="image/png" href="/icon.png" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="shortcut icon" type="image/png" href="/icon.png"/>
 
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css"/>
     <title>Bankist</title>
   </head>
   <body>
     <!-- TOP NAVIGATION -->
     <nav>
       <p class="welcome">Log in to get started</p>
-      <img src="logo.png" alt="Logo" class="logo" />
-      <form class="login">
-        <label>
-          <input
-            type="text"
-            placeholder="user"
-            class="login__input login__input--user"
-          />
-        </label>
-        <!-- In practice, use type="password" -->
-        <label>
-          <input
-            type="text"
-            placeholder="PIN"
-            maxlength="4"
-            class="login__input login__input--pin"
-          />
-        </label>
-        <button class="login__btn">&rarr;</button>
-      </form>
+      <img src="logo.png" alt="Logo" class="logo"/>
+      <div class="profile-btn">
+        ☼
+      </div>
     </nav>
 
     <main class="app">
@@ -47,7 +31,6 @@
         </div>
         <p class="balance__value">0000$</p>
       </div>
-
       <!-- MOVEMENTS -->
       <div class="movements">
         <div class="movements__row">
@@ -63,58 +46,60 @@
           <div class="movements__value">-378€</div>
         </div>
       </div>
-
       <!-- SUMMARY -->
       <div class="summary">
-        <p class="summary__label">In</p>
-        <p class="summary__value summary__value--in">0000€</p>
-        <p class="summary__label">Out</p>
-        <p class="summary__value summary__value--out">0000€</p>
-        <p class="summary__label">Interest</p>
-        <p class="summary__value summary__value--interest">0000€</p>
-        <button class="btn--sort">&downarrow; SORT</button>
+        <div>
+          <p class="summary__label">In</p>
+          <p class="summary__value summary__value--in">0000€</p>
+        </div>
+        <div>
+          <p class="summary__label">Out</p>
+          <p class="summary__value summary__value--out">0000€</p>
+        </div>
+        <div>
+          <p class="summary__label">Interest</p>
+          <p class="summary__value summary__value--interest">0000€</p>
+        </div>
+         <div><button class="btn--sort">&downarrow; SORT</button></div>
       </div>
-
       <!-- OPERATION: TRANSFERS -->
       <div class="operation operation--transfer">
         <h2>Transfer money</h2>
         <form class="form form--transfer">
           <label>
-            <input type="text" class="form__input form__input--to" />
+            <input type="text" class="form__input form__input--to"/>
           </label>
           <label>
-            <input type="number" class="form__input form__input--amount" />
+            <input type="number" class="form__input form__input--amount"/>
           </label>
           <button class="form__btn form__btn--transfer">&rarr;</button>
           <label class="form__label">Transfer to</label>
           <label class="form__label">Amount</label>
         </form>
       </div>
-
       <!-- OPERATION: LOAN -->
       <div class="operation operation--loan">
         <h2>Request loan</h2>
         <form class="form form--loan">
           <label>
-            <input type="number" class="form__input form__input--loan-amount" />
+            <input type="number" class="form__input form__input--loan-amount"/>
           </label>
           <button class="form__btn form__btn--loan">&rarr;</button>
           <label class="form__label form__label--loan">Amount</label>
         </form>
       </div>
-
       <!-- OPERATION: CLOSE -->
       <div class="operation operation--close">
         <h2>Close account</h2>
         <form class="form form--close">
           <label>
-            <input type="text" class="form__input form__input--user" />
+            <input type="text" class="form__input form__input--user"/>
           </label>
           <label>
             <input
-              type="password"
-              maxlength="6"
-              class="form__input form__input--pin"
+                    type="password"
+                    maxlength="6"
+                    class="form__input form__input--pin"
             />
           </label>
           <button class="form__btn form__btn--close">&rarr;</button>
@@ -122,7 +107,6 @@
           <label class="form__label">Confirm PIN</label>
         </form>
       </div>
-
       <!-- LOGOUT TIMER -->
       <p class="logout-timer">
         You will be logged out in <span class="timer">05:00</span>

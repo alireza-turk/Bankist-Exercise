@@ -103,7 +103,7 @@ const getData=function (account){
           .filter((int) => {
             return int >= 1;
           })
-          .reduce((acc, int) => acc + int, 0))
+          .reduce((acc, int) => acc + int, 0));
     }
   }
 }
