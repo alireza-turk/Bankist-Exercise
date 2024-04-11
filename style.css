@@ -39,7 +39,8 @@ nav {
 
 .profile-btn {
     cursor: pointer;
-    background-color: #fff;
+    background-color: #39b385;
+    color: #fff;
     font-size: 2rem;
     font-weight: 900;
     display: flex;
@@ -158,7 +159,9 @@ nav {
 }
 
 .summary > div:last-child {
-    flex-grow: 0;
+    display: flex;
+    gap: 10px;
+    justify-content: end;
 }
 
 .summary > div {
@@ -187,13 +190,27 @@ nav {
     color: #f5465d;
 }
 
+.summary .btn--sort.active {
+    background-color: #f5465d;
+}
+
 .btn--sort {
-    margin-left: auto;
+    width: 55px;
+    height: 55px;
     border: none;
-    background: none;
-    font-size: 1.3rem;
-    font-weight: 500;
     cursor: pointer;
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 #00000055;
+    transition: all 0.3s;
+}
+
+.btn--sort:hover {
+    background-color: #f5465d;
+}
+
+.btn--sort img {
+    width: 80%;
 }
 
 /* OPERATIONS */

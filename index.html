@@ -16,7 +16,10 @@
       <p class="welcome">Log in to get started</p>
       <img src="logo.png" alt="Logo" class="logo"/>
       <div class="profile-btn">
-        ☼
+        <svg class="svg-icon"
+             style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;"
+             viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path
+                d="M512 661.994667q61.994667 0 106.005333-44.010667t44.010667-106.005333-44.010667-106.005333-106.005333-44.010667-106.005333 44.010667-44.010667 106.005333 44.010667 106.005333 106.005333 44.010667zM829.994667 554.005333l90.005333 69.994667q13.994667 10.005333 4.010667 28.010667l-85.994667 148.010667q-8 13.994667-26.005333 8l-106.005333-42.005333q-42.005333 29.994667-72 42.005333l-16 112q-4.010667 18.005333-20.010667 18.005333l-172.010667 0q-16 0-20.010667-18.005333l-16-112q-37.994667-16-72-42.005333l-106.005333 42.005333q-18.005333 5.994667-26.005333-8l-85.994667-148.010667q-10.005333-18.005333 4.010667-28.010667l90.005333-69.994667q-2.005333-13.994667-2.005333-42.005333t2.005333-42.005333l-90.005333-69.994667q-13.994667-10.005333-4.010667-28.010667l85.994667-148.010667q8-13.994667 26.005333-8l106.005333 42.005333q42.005333-29.994667 72-42.005333l16-112q4.010667-18.005333 20.010667-18.005333l172.010667 0q16 0 20.010667 18.005333l16 112q37.994667 16 72 42.005333l106.005333-42.005333q18.005333-5.994667 26.005333 8l85.994667 148.010667q10.005333 18.005333-4.010667 28.010667l-90.005333 69.994667q2.005333 13.994667 2.005333 42.005333t-2.005333 42.005333z"/></svg>
       </div>
     </nav>
 
@@ -26,25 +29,25 @@
         <div>
           <p class="balance__label">Current balance</p>
           <p class="balance__date">
-            As of <span class="date">**/*/****</span>
+            As of <span class="date">00/0/0000</span>
           </p>
         </div>
         <p class="balance__value">0000$</p>
       </div>
       <!-- MOVEMENTS -->
       <div class="movements">
-        <div class="movements__row">
-          <div class="movements__type movements__type--deposit">2 deposit</div>
-          <div class="movements__date">3 days ago</div>
-          <div class="movements__value">4 000€</div>
-        </div>
-        <div class="movements__row">
-          <div class="movements__type movements__type--withdrawal">
-            1 withdrawal
-          </div>
-          <div class="movements__date">24/01/2037</div>
-          <div class="movements__value">-378€</div>
-        </div>
+<!--        <div class="movements__row">-->
+<!--          <div class="movements__type movements__type&#45;&#45;deposit">2 deposit</div>-->
+<!--          <div class="movements__date">3 days ago</div>-->
+<!--          <div class="movements__value">4 000€</div>-->
+<!--        </div>-->
+<!--        <div class="movements__row">-->
+<!--          <div class="movements__type movements__type&#45;&#45;withdrawal">-->
+<!--            1 withdrawal-->
+<!--          </div>-->
+<!--          <div class="movements__date">24/01/2037</div>-->
+<!--          <div class="movements__value">-378€</div>-->
+<!--        </div>-->
       </div>
       <!-- SUMMARY -->
       <div class="summary">
@@ -60,7 +63,11 @@
           <p class="summary__label">Interest</p>
           <p class="summary__value summary__value--interest">0000€</p>
         </div>
-         <div><button class="btn--sort">&downarrow; SORT</button></div>
+         <div>
+           <button class="btn--sort btn--sort__ascending"><img src="sort_ascending.png" alt="sort ascending"></button>
+           <button class="btn--sort btn--sort__descending"><img src="sort_descending.png"
+                                                                alt="sort descending"></button>
+         </div>
       </div>
       <!-- OPERATION: TRANSFERS -->
       <div class="operation operation--transfer">
