@@ -28,6 +28,49 @@ nav {
     align-items: center;
 }
 
+.profile-container {
+    opacity: 0;
+    flex-direction: column;
+    width: 200px;
+    height: auto;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 7px 0 #00000033;
+    background-color: #86c4aa;
+    position: fixed;
+    bottom: 70px;
+    left: 20px;
+    z-index: 10000;
+    transition: opacity 0.3s;
+}
+
+.profile-container.active {
+    opacity: 1;
+}
+
+.profile-login {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-login input, .profile-login button {
+    width: 100%;
+    padding: 10px 5px;
+    border-radius: 5px;
+    border: none;
+}
+
+.profile-login .btn-submit {
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.profile-login .btn-submit:hover {
+    background-color: #e52a5a;
+    color: #ffffff;
+}
+
 .welcome {
     font-size: 1.9rem;
     font-weight: 500;
@@ -73,7 +116,7 @@ nav {
     gap: 2rem;
 
     /* NOTE This creates the fade in/out animation */
-    /*opacity: 0;*/
+    opacity: 0;
     transition: all 1s;
 }
 
@@ -303,6 +346,35 @@ h2 {
 
 .timer {
     font-weight: 600;
+}
+
+.notification {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 7px 0 #00000066;
+    background-color: #eeeeee;
+    width: 300px;
+    position: fixed;
+    bottom: 20px;
+    right: -100%;
+    padding: 10px;
+    transition: all 1s;
+}
+
+.notification.active {
+    right: 10px;
+}
+
+.notification .note-title {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.notification .note-title > img {
+    width: 30px;
 }
 
 footer {
