@@ -21,14 +21,31 @@
       </div>
       <div class="profile-container">
         <form class="profile-login">
-          <label>
-<input type="text" name="input-username" class="input-username">
-</label>
-          <label>
-<input type="text" name="input-pass" class="input-pass">
-</label>
+          <label for="inputL-username">UserName:</label>
+<input type="text" name="input-username" id="inputL-username">
+
+          <label for="inputL-pass">Password:</label>
+<input type="text" name="input-pass" id="inputL-pass">
+
           <button class="btn-submit">Login</button>
         </form>
+          <div class="profile" style="display: none">
+              <span class="profile-title">Change Profile</span>
+              <div class="profile-currency">
+                  <label for="input-currency">Your Currency:</label>
+                  <select name="input-currency" id="input-currency">
+                      <option value="USD">USD (&#36;)</option>
+                      <option value="EUR">EUR (&euro;)</option>
+                      <option value="GBP">GBP (&pound;)</option>
+                  </select>
+              </div>
+              <div class="profile-pass">
+                  <label for="input-pass">Password:</label><input type="text"
+                                                                  name="input-pass"
+                                                                  id="input-pass">
+              </div>
+                  <button class="profile-submit">Save</button>
+          </div>
       </div>
     </nav>
 

@@ -48,28 +48,36 @@ nav {
     opacity: 1;
 }
 
-.profile-login {
+.profile-login, .profile {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.profile-login input, .profile-login button {
+.profile-container input, .profile-container select, .profile-container button {
     width: 100%;
     padding: 10px 5px;
     border-radius: 5px;
     border: none;
 }
 
-.profile-login .btn-submit {
+.profile .profile-title {
+    text-align: center;
+    font-weight: bold;
+    color: #e52a5a;
+    font-size: 20px;
+}
+
+.profile-container button {
     transition: all 0.2s;
     cursor: pointer;
 }
 
-.profile-login .btn-submit:hover {
+.profile-container button:hover {
     background-color: #e52a5a;
     color: #ffffff;
 }
+
 
 .welcome {
     font-size: 1.9rem;
@@ -101,7 +109,7 @@ nav {
     line-height: 1em;
 }
 
-.profile:hover {
+.profile-btn:hover {
     animation-play-state: paused;
 }
 

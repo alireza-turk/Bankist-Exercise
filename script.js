@@ -23,7 +23,7 @@ const accounts = {
     },
     jd: {
         owner: 'Jessica Davis',
-        currencyBalance: 'EUR',
+        currencyBalance: 'USD',
         movements: [
             [5000, '01/03/2000'],
             [3400, '12/02/2020'],
@@ -136,8 +136,23 @@ const getData = function (account) {
         addBalance(amount) {
             account.movements.push([parseFloat(amount), dateNow()]);
             movementsArr = [...account.movements.values()].map(([amount, amountDate]) => amount);
+        },
+        changeProfile(currency = 'USD', pass = '1111') {
+            account.currencyBalance = currency.toUpperCase();
+            account.pin = pass.toUpperCase();
+            currentUser = getData(account);
+            showData(currentUser);
         }
     }
+}
+
+const showData = function (currentUser) {
+    currentUser.showMovements();
+    labelSumIn.innerHTML = currentUser.sumIn();
+    labelSumOut.innerHTML = currentUser.sumOut();
+    labelSumInterest.innerHTML = currentUser.sumInterest();
+    labelBalance.innerHTML = currentUser.balance();
+    labelDate.innerHTML = dateNow();
 }
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ Event Scripts ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -171,21 +186,22 @@ btnFormLoan.addEventListener('click', (e) => {
     e.preventDefault();
     const loanAmount = inputFormLoan.value;
     parseFloat(loanAmount) > 0 && currentUser.addBalance(loanAmount);
+    showData(currentUser);
     inputFormLoan.value = "";
-    labelBalance.innerHTML = currentUser.balance();
-    currentUser.showMovements();
-    labelSumIn.innerHTML = currentUser.sumIn();
-    labelSumOut.innerHTML = currentUser.sumOut();
-    labelSumInterest.innerHTML = currentUser.sumInterest();
 })
 
 // ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 const btnProfile = $.querySelector('.profile-btn');
 const containerProfile = $.querySelector('.profile-container');
-const formLogin = $.querySelector('.profile-login');
-const inputLoginUserName = formLogin.querySelector('.input-username');
-const inputLoginPass = formLogin.querySelector('.input-pass');
+const formLogin = containerProfile.querySelector('.profile-login');
+const inputLoginUserName = formLogin.querySelector('#inputL-username');
+const inputLoginPass = formLogin.querySelector('#inputL-pass');
 const btnLoginSubmit = formLogin.querySelector('.btn-submit');
+
+const profile = containerProfile.querySelector('.profile');
+const inputProfileCurrency = profile.querySelector('#input-currency');
+const inputProfilePass = profile.querySelector('#input-pass');
+const btnProfileSubmit = profile.querySelector('.profile-submit');
 btnProfile.addEventListener('click', () => containerProfile.classList.toggle('active'));
 
 const showNote = function (message = 'this is Notification', state = 'info') {
@@ -219,20 +235,28 @@ btnLoginSubmit.addEventListener('click', (e) => {
             showNote('Welcome to your account.', 'info');
             containerProfile.classList.remove('active');
             formLogin.style.display = "none";
+            profile.style.display = "flex";
 
             currentUser = getData(userTarget);
+            showData(currentUser);
+            inputProfileCurrency.querySelector(`option[value='${userTarget.currencyBalance}']`).selected = true;
+            inputProfilePass.value = userTarget.pin;
             $.querySelector('.app').style.opacity = '1';
-            labelBalance.innerHTML = currentUser.balance();
-            labelDate.innerHTML = dateNow();
             labelWelcome.innerHTML = `Welcome back, ${currentUser.firstName}`;
-            labelSumIn.innerHTML = currentUser.sumIn();
-            labelSumOut.innerHTML = currentUser.sumOut();
-            labelSumInterest.innerHTML = currentUser.sumInterest();
-            currentUser.showMovements();
         } else {
             showNote('The password entered is not correct', 'error');
         }
     } else {
         showNote('The username entered was not found', 'warn');
+    }
+})
+btnProfileSubmit.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (inputProfilePass.value) {
+        currentUser.changeProfile(inputProfileCurrency.value, inputProfilePass.value);
+        containerProfile.classList.remove('active');
+        showNote('Your account settings have been successfully completed', 'info')
+    } else {
+        showNote('Please choose a suitable password for your account', 'warn');
     }
 })
