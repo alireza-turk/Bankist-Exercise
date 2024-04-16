@@ -29,7 +29,7 @@ nav {
 }
 
 .profile-container {
-    opacity: 0;
+    display: none;
     flex-direction: column;
     width: 200px;
     height: auto;
@@ -41,11 +41,10 @@ nav {
     bottom: 70px;
     left: 20px;
     z-index: 10000;
-    transition: opacity 0.3s;
 }
 
 .profile-container.active {
-    opacity: 1;
+    display: flex;
 }
 
 .profile-login, .profile {
@@ -118,14 +117,10 @@ nav {
     position: relative;
     max-width: 100rem;
     margin: 4rem auto;
-    display: grid;
+    display: none;
     grid-template-columns: 4fr 3fr;
     grid-template-rows: auto repeat(3, 15rem) auto;
     gap: 2rem;
-
-    /* NOTE This creates the fade in/out animation */
-    opacity: 0;
-    transition: all 1s;
 }
 
 .balance {

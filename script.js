@@ -1,4 +1,32 @@
 'use strict';
+const $ = document;
+const labelWelcome = $.querySelector('.welcome');
+const labelDate = $.querySelector('.balance__date .date');
+const labelBalance = $.querySelector('.balance__value');
+const labelSumIn = $.querySelector('.summary__value--in');
+const labelSumOut = $.querySelector('.summary__value--out');
+const labelSumInterest = $.querySelector('.summary__value--interest');
+const labelTimer = $.querySelector('.timer');
+const containerMovements = $.querySelector('.movements');
+
+const btnsSort = $.querySelectorAll('.btn--sort');
+const btnSortAsc = $.querySelector('.btn--sort.btn--sort__ascending');
+const btnSortDesc = $.querySelector('.btn--sort.btn--sort__descending');
+
+const btnFormLoan = $.querySelector('.form--loan .form__btn--loan');
+const inputFormLoan = $.querySelector('.form--loan .form__input--loan-amount');
+
+const btnProfile = $.querySelector('.profile-btn');
+const containerProfile = $.querySelector('.profile-container');
+const formLogin = containerProfile.querySelector('.profile-login');
+const inputLoginUserName = formLogin.querySelector('#inputL-username');
+const inputLoginPass = formLogin.querySelector('#inputL-pass');
+const btnLoginSubmit = formLogin.querySelector('.btn-submit');
+
+const profile = containerProfile.querySelector('.profile');
+const inputProfileCurrency = profile.querySelector('#input-currency');
+const inputProfilePass = profile.querySelector('#input-pass');
+const btnProfileSubmit = profile.querySelector('.profile-submit');
 
 // Data
 const currencies = {
@@ -6,7 +34,7 @@ const currencies = {
     EUR: '&euro;',
     GBP: '&pound;'
 }
-const accounts = {
+let accounts = {
     js: {
         owner: 'Jonas Schmedtmann',
         currencyBalance: 'EUR',
@@ -66,15 +94,6 @@ const accounts = {
 let currentUser;
 
 // Elements
-const $ = document;
-const labelWelcome = $.querySelector('.welcome');
-const labelDate = $.querySelector('.balance__date .date');
-const labelBalance = $.querySelector('.balance__value');
-const labelSumIn = $.querySelector('.summary__value--in');
-const labelSumOut = $.querySelector('.summary__value--out');
-const labelSumInterest = $.querySelector('.summary__value--interest');
-const labelTimer = $.querySelector('.timer');
-const containerMovements = $.querySelector('.movements');
 
 const dateNow = (splitChar = '/') => {
     const date = new Date();
@@ -82,9 +101,9 @@ const dateNow = (splitChar = '/') => {
 };
 
 // App Functions
-const getData = function (account) {
+const get = function (account) {
     const currency = account.currencyBalance;
-    let movementsArr = [...account.movements.values()].map(([amount, amountDate]) => amount);
+    let movementsArr = [...account.movements.values()].map(movement => movement[0]);
     return {
         firstName: `${account.owner.split(' ')[0]}👋`,
         balance(arr = movementsArr) {
@@ -135,12 +154,14 @@ const getData = function (account) {
         },
         addBalance(amount) {
             account.movements.push([parseFloat(amount), dateNow()]);
-            movementsArr = [...account.movements.values()].map(([amount, amountDate]) => amount);
+            movementsArr = [...account.movements.values()].map(movement => movement[0]);
+            setData('userTarget', account);
         },
         changeProfile(currency = 'USD', pass = '1111') {
             account.currencyBalance = currency.toUpperCase();
             account.pin = pass.toUpperCase();
-            currentUser = getData(account);
+            currentUser = get(account);
+            setData('userTarget', account);
             showData(currentUser);
         }
     }
@@ -154,56 +175,6 @@ const showData = function (currentUser) {
     labelBalance.innerHTML = currentUser.balance();
     labelDate.innerHTML = dateNow();
 }
-
-//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ Event Scripts ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-const btnsSort = $.querySelectorAll('.btn--sort');
-const btnSortAsc = $.querySelector('.btn--sort.btn--sort__ascending');
-const btnSortDesc = $.querySelector('.btn--sort.btn--sort__descending');
-btnsSort.forEach(btnSort => {
-    btnSort.addEventListener('click', () => {
-        if (btnSort.classList.contains('active')) {
-            btnSort.classList.remove('active');
-            currentUser.showMovements();
-        } else {
-            if (btnSort.classList.contains('btn--sort__ascending')) {
-                btnSortDesc.classList.remove('active');
-                btnSort.classList.add('active');
-                currentUser.showMovements('asc');
-            } else if (btnSort.classList.contains('btn--sort__descending')) {
-                btnSortAsc.classList.remove('active');
-                btnSort.classList.add('active');
-                currentUser.showMovements('desc');
-            } else {
-                currentUser.showMovements();
-            }
-        }
-    })
-})
-// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-const btnFormLoan = $.querySelector('.form--loan .form__btn--loan');
-const inputFormLoan = $.querySelector('.form--loan .form__input--loan-amount');
-btnFormLoan.addEventListener('click', (e) => {
-    e.preventDefault();
-    const loanAmount = inputFormLoan.value;
-    parseFloat(loanAmount) > 0 && currentUser.addBalance(loanAmount);
-    showData(currentUser);
-    inputFormLoan.value = "";
-})
-
-// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-const btnProfile = $.querySelector('.profile-btn');
-const containerProfile = $.querySelector('.profile-container');
-const formLogin = containerProfile.querySelector('.profile-login');
-const inputLoginUserName = formLogin.querySelector('#inputL-username');
-const inputLoginPass = formLogin.querySelector('#inputL-pass');
-const btnLoginSubmit = formLogin.querySelector('.btn-submit');
-
-const profile = containerProfile.querySelector('.profile');
-const inputProfileCurrency = profile.querySelector('#input-currency');
-const inputProfilePass = profile.querySelector('#input-pass');
-const btnProfileSubmit = profile.querySelector('.profile-submit');
-btnProfile.addEventListener('click', () => containerProfile.classList.toggle('active'));
-
 const showNote = function (message = 'this is Notification', state = 'info') {
     const noteDiv = $.querySelector(".notification");
     const noteTitle = noteDiv.querySelector('.note-title');
@@ -225,8 +196,65 @@ const showNote = function (message = 'this is Notification', state = 'info') {
     }
     noteDes.innerHTML = message;
     noteDiv.classList.add('active');
-    setTimeout(() => noteDiv.classList.remove('active'), 5000)
+    setTimeout(() => noteDiv.classList.remove('active'), 3000)
 }
+
+const setData = function (key, item) {
+    localStorage.setItem(key, JSON.stringify(item));
+    localStorage.setItem('accounts', JSON.stringify(accounts));
+}
+const getData = function () {
+    let user = JSON.parse(localStorage.getItem('userTarget'));
+    let data = JSON.parse(localStorage.getItem('accounts'));
+    if (user && data) {
+        showNote('Welcome to your account.', 'info');
+        containerProfile.classList.remove('active');
+        formLogin.style.display = "none";
+        profile.style.display = "flex";
+
+        currentUser = get(user);
+        accounts = data;
+        showData(currentUser);
+        inputProfilePass.value = user.pin;
+        inputProfileCurrency.querySelector(`option[value='${user.currencyBalance}']`).selected = true;
+        $.querySelector('.app').style.display = 'grid';
+        labelWelcome.innerHTML = `Welcome back, ${currentUser.firstName}`;
+    }
+}
+getData();
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ Event Scripts ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+btnsSort.forEach(btnSort => {
+    btnSort.addEventListener('click', () => {
+        if (btnSort.classList.contains('active')) {
+            btnSort.classList.remove('active');
+            currentUser.showMovements();
+        } else {
+            if (btnSort.classList.contains('btn--sort__ascending')) {
+                btnSortDesc.classList.remove('active');
+                btnSort.classList.add('active');
+                currentUser.showMovements('asc');
+            } else if (btnSort.classList.contains('btn--sort__descending')) {
+                btnSortAsc.classList.remove('active');
+                btnSort.classList.add('active');
+                currentUser.showMovements('desc');
+            } else {
+                currentUser.showMovements();
+            }
+        }
+    })
+})
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+btnFormLoan.addEventListener('click', (e) => {
+    e.preventDefault();
+    const loanAmount = inputFormLoan.value;
+    parseFloat(loanAmount) > 0 && currentUser.addBalance(loanAmount);
+    showData(currentUser);
+    inputFormLoan.value = "";
+})
+
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+btnProfile.addEventListener('click', () => containerProfile.classList.toggle('active'));
+
 btnLoginSubmit.addEventListener('click', (e) => {
     e.preventDefault();
     const userTarget = accounts[inputLoginUserName.value]
@@ -237,11 +265,12 @@ btnLoginSubmit.addEventListener('click', (e) => {
             formLogin.style.display = "none";
             profile.style.display = "flex";
 
-            currentUser = getData(userTarget);
+            currentUser = get(userTarget);
+            setData('userTarget', userTarget);
             showData(currentUser);
             inputProfileCurrency.querySelector(`option[value='${userTarget.currencyBalance}']`).selected = true;
             inputProfilePass.value = userTarget.pin;
-            $.querySelector('.app').style.opacity = '1';
+            $.querySelector('.app').style.display = 'grid';
             labelWelcome.innerHTML = `Welcome back, ${currentUser.firstName}`;
         } else {
             showNote('The password entered is not correct', 'error');
