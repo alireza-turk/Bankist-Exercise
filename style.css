@@ -321,18 +321,12 @@ h2 {
     background-color: rgba(255, 255, 255, 0.6);
 }
 
-.form__label {
-    font-size: 1.3rem;
-    text-align: center;
-}
-
 .form__btn {
     border: none;
     border-radius: 0.7rem;
     font-size: 1.8rem;
     background-color: #fff;
     cursor: pointer;
-    transition: all 0.3s;
 }
 
 .form__btn:focus {
@@ -345,6 +339,15 @@ h2 {
     margin-top: 1.9rem;
     text-align: right;
     font-size: 1.25rem;
+}
+
+.btn--close {
+    border: none;
+    border-radius: 0.7rem;
+    font-size: 1.8rem;
+    background-color: #fff;
+    cursor: pointer;
+    padding: 10px 40px;
 }
 
 .timer {

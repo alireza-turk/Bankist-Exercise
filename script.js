@@ -28,6 +28,7 @@ const inputProfileCurrency = profile.querySelector('#input-currency');
 const inputProfilePass = profile.querySelector('#input-pass');
 const btnProfileSubmit = profile.querySelector('.profile-submit');
 
+const btnLogOut = $.querySelector('.btn--close');
 // Data
 const currencies = {
     USD: '&#36;',
@@ -204,24 +205,39 @@ const setData = function (key, item) {
     localStorage.setItem('accounts', JSON.stringify(accounts));
 }
 const getData = function () {
-    let user = JSON.parse(localStorage.getItem('userTarget'));
-    let data = JSON.parse(localStorage.getItem('accounts'));
-    if (user && data) {
-        showNote('Welcome to your account.', 'info');
-        containerProfile.classList.remove('active');
-        formLogin.style.display = "none";
-        profile.style.display = "flex";
+    try {
+        let user = JSON.parse(localStorage.getItem('userTarget'));
+        let data = JSON.parse(localStorage.getItem('accounts'));
+        if (user && data) {
+            containerProfile.classList.remove('active');
+            formLogin.style.display = "none";
+            profile.style.display = "flex";
 
-        currentUser = get(user);
-        accounts = data;
-        showData(currentUser);
-        inputProfilePass.value = user.pin;
-        inputProfileCurrency.querySelector(`option[value='${user.currencyBalance}']`).selected = true;
-        $.querySelector('.app').style.display = 'grid';
-        labelWelcome.innerHTML = `Welcome back, ${currentUser.firstName}`;
+            currentUser = get(user);
+            accounts = data;
+            showData(currentUser);
+            inputProfilePass.value = user.pin;
+            inputProfileCurrency.querySelector(`option[value='${user.currencyBalance}']`).selected = true;
+            $.querySelector('.app').style.display = 'grid';
+            labelWelcome.innerHTML = `Welcome back, ${currentUser.firstName}`;
+            showNote('Welcome to your account.', 'info');
+        }
+    } catch (e) {
+        formLogin.style.display = "flex";
+        profile.style.display = "none";
     }
+
 }
 getData();
+
+const closeAccount = function () {
+    setData('userTarget');
+    containerProfile.classList.remove('active');
+    formLogin.style.display = "flex";
+    profile.style.display = "none";
+    $.querySelector('.app').style.display = 'none';
+    labelWelcome.innerHTML = `Log in to get started`;
+}
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ Event Scripts ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 btnsSort.forEach(btnSort => {
     btnSort.addEventListener('click', () => {
@@ -289,3 +305,4 @@ btnProfileSubmit.addEventListener('click', (e) => {
         showNote('Please choose a suitable password for your account', 'warn');
     }
 })
+btnLogOut.addEventListener('click', () => closeAccount())
