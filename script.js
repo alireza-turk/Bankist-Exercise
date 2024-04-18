@@ -22,13 +22,18 @@ const formLogin = containerProfile.querySelector('.profile-login');
 const inputLoginUserName = formLogin.querySelector('#inputL-username');
 const inputLoginPass = formLogin.querySelector('#inputL-pass');
 const btnLoginSubmit = formLogin.querySelector('.btn-submit');
+const btnLogOut = $.querySelector('.btn--close');
 
 const profile = containerProfile.querySelector('.profile');
 const inputProfileCurrency = profile.querySelector('#input-currency');
 const inputProfilePass = profile.querySelector('#input-pass');
 const btnProfileSubmit = profile.querySelector('.profile-submit');
 
-const btnLogOut = $.querySelector('.btn--close');
+const formTransfer = $.querySelector('.form--transfer');
+const inputTransferTo = formTransfer.querySelector('.form__input--to');
+const inputTransferAmount = formTransfer.querySelector('.form__input--amount');
+const btnTransferSubmit = formTransfer.querySelector('.form__btn--transfer');
+
 // Data
 const currencies = {
     USD: '&#36;',
@@ -306,3 +311,32 @@ btnProfileSubmit.addEventListener('click', (e) => {
     }
 })
 btnLogOut.addEventListener('click', () => closeAccount())
+btnTransferSubmit.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (inputTransferTo.value !== '') {
+        if (inputTransferAmount.value !== '') {
+            if (accounts[inputTransferTo.value]) {
+                if (Number(inputTransferAmount.value) <= 0) {
+                    showNote('Please enter a suitable and calculable amount', 'warn');
+                } else {
+                    const currentBalance = (currentUser.balance().slice(0, currentUser.balance().indexOf('&')));
+                    if (Number(inputTransferAmount.value) <= currentBalance) {
+                        accounts[inputTransferTo.value].movements.push([Number(inputTransferAmount.value), dateNow()])
+                        currentUser.addBalance((Number(inputTransferAmount.value)) - (Number(inputTransferAmount.value) * 2));
+                        inputTransferAmount.value = '';
+                        inputTransferTo.value = '';
+                        showData(currentUser);
+                    } else {
+                        showNote('Your account balance is insufficient', 'error');
+                    }
+                }
+            } else {
+                showNote('Your desired user was not found', 'error');
+            }
+        } else {
+            showNote('Please enter your desired amount', 'warn');
+        }
+    } else {
+        showNote('Please enter your desired username', 'warn');
+    }
+})
