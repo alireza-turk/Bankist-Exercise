@@ -6,7 +6,6 @@ const labelBalance = $.querySelector('.balance__value');
 const labelSumIn = $.querySelector('.summary__value--in');
 const labelSumOut = $.querySelector('.summary__value--out');
 const labelSumInterest = $.querySelector('.summary__value--interest');
-const labelTimer = $.querySelector('.timer');
 const containerMovements = $.querySelector('.movements');
 
 const btnsSort = $.querySelectorAll('.btn--sort');
@@ -34,6 +33,7 @@ const inputTransferTo = formTransfer.querySelector('.form__input--to');
 const inputTransferAmount = formTransfer.querySelector('.form__input--amount');
 const btnTransferSubmit = formTransfer.querySelector('.form__btn--transfer');
 
+const timerElm = $.querySelector('.logout-timer .timer');
 // Data
 const currencies = {
     USD: '&#36;',
@@ -98,6 +98,7 @@ let accounts = {
     }
 }
 let currentUser;
+let timerSecond = 300;
 
 // Elements
 
@@ -185,24 +186,26 @@ const showNote = function (message = 'this is Notification', state = 'info') {
     const noteDiv = $.querySelector(".notification");
     const noteTitle = noteDiv.querySelector('.note-title');
     const noteDes = noteDiv.querySelector('.note-des');
+    if (!noteDiv.classList.contains('active')) {
+        switch (state) {
+            case "info":
+                noteDiv.style.backgroundColor = "#d3e6f2";
+                noteTitle.innerHTML = "<img src=\"info-icon.png\" alt=\"notification icon\"><span>Info</span>";
+                break;
+            case "warn":
+                noteDiv.style.backgroundColor = "#ffe3a7";
+                noteTitle.innerHTML = "<img src=\"warning-icon.png\" alt=\"notification icon\"><span>Warning</span>";
+                break;
+            case "error":
+                noteDiv.style.backgroundColor = "#f8ced8";
+                noteTitle.innerHTML = "<img src=\"error-icon.webp\" alt=\"notification icon\"><span>Error</span>";
+                break;
+        }
+        noteDes.innerHTML = message;
+        noteDiv.classList.add('active');
+        setTimeout(() => noteDiv.classList.remove('active'), 3000)
 
-    switch (state) {
-        case "info":
-            noteDiv.style.backgroundColor = "#d3e6f2";
-            noteTitle.innerHTML = "<img src=\"info-icon.png\" alt=\"notification icon\"><span>Info</span>";
-            break;
-        case "warn":
-            noteDiv.style.backgroundColor = "#ffe3a7";
-            noteTitle.innerHTML = "<img src=\"warning-icon.png\" alt=\"notification icon\"><span>Warning</span>";
-            break;
-        case "error":
-            noteDiv.style.backgroundColor = "#f8ced8";
-            noteTitle.innerHTML = "<img src=\"error-icon.webp\" alt=\"notification icon\"><span>Error</span>";
-            break;
     }
-    noteDes.innerHTML = message;
-    noteDiv.classList.add('active');
-    setTimeout(() => noteDiv.classList.remove('active'), 3000)
 }
 
 const setData = function (key, item) {
@@ -213,11 +216,13 @@ const getData = function () {
     try {
         let user = JSON.parse(localStorage.getItem('userTarget'));
         let data = JSON.parse(localStorage.getItem('accounts'));
+        let time = JSON.parse(localStorage.getItem('timerSecond'));
         if (user && data) {
             containerProfile.classList.remove('active');
             formLogin.style.display = "none";
             profile.style.display = "flex";
 
+            timerSecond = time;
             currentUser = get(user);
             accounts = data;
             showData(currentUser);
@@ -235,6 +240,23 @@ const getData = function () {
 }
 getData();
 
+timerElm.innerHTML = `${parseInt(`${timerSecond / 60}`).toString().padStart(2, '0')}:${(timerSecond % 60).toString().padStart(2, '0')}`;
+const timerFn = function () {
+    if (timerSecond <= 0) {
+        closeAccount();
+        showNote('Your account\'s active timer has expired, please try again to log in again', 'info');
+    } else {
+        timerSecond--;
+        timerElm.innerHTML = `${parseInt(`${timerSecond / 60}`).toString().padStart(2, '0')}:${(timerSecond % 60).toString().padStart(2, '0')}`;
+        localStorage.setItem('timerSecond', JSON.stringify(timerSecond));
+    }
+}
+
+let timer;
+if (currentUser) {
+    timer = setInterval(timerFn, 1000);
+}
+
 const closeAccount = function () {
     setData('userTarget');
     containerProfile.classList.remove('active');
@@ -242,6 +264,8 @@ const closeAccount = function () {
     profile.style.display = "none";
     $.querySelector('.app').style.display = 'none';
     labelWelcome.innerHTML = `Log in to get started`;
+    clearInterval(timer);
+    localStorage.setItem('timerSecond', JSON.stringify(300));
 }
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ Event Scripts ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 btnsSort.forEach(btnSort => {
@@ -287,6 +311,8 @@ btnLoginSubmit.addEventListener('click', (e) => {
             profile.style.display = "flex";
 
             currentUser = get(userTarget);
+            timerSecond = 300;
+            timer = setInterval(timerFn, 1000);
             setData('userTarget', userTarget);
             showData(currentUser);
             inputProfileCurrency.querySelector(`option[value='${userTarget.currencyBalance}']`).selected = true;
