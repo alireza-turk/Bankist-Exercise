@@ -46,10 +46,10 @@ let accounts = {
         currencyBalance: 'EUR',
         movements: [
             [200, '01/03/2000'],
-            [-400, '08/03/2024'],
+            [400, '08/03/2024'],
             [3000, '05/01/2024'],
-            [-650, '09/02/2024'],
-            [-130, '17/02/2022'],
+            [650, '09/02/2024'],
+            [130, '17/02/2022'],
             [70, '30/03/2020'],
         ],
         interestRate: 1.2, // %
@@ -104,7 +104,7 @@ let timerSecond = 300;
 
 const dateNow = (splitChar = '/') => {
     const date = new Date();
-    return date.getDate().toString().padStart(2, '0') + splitChar + date.getMonth().toString().padStart(2, '0') + splitChar + date.getFullYear();
+    return `${date.getDate()}`.padStart(2, '0') + splitChar + `${(date.getMonth() + 1)}`.padStart(2, '0') + splitChar + date.getFullYear();
 };
 
 // App Functions
@@ -131,7 +131,9 @@ const get = function (account) {
             return this.balance(movementsArr.filter(value => value > 0));
         },
         sumOut() {
-            return this.balance(movementsArr.filter(value => value < 0)).slice(1);
+            const sumOutBalance = this.balance(movementsArr.filter(value => value < 0));
+            if (parseInt(sumOutBalance) < 0) return sumOutBalance.slice(1);
+            else return sumOutBalance;
         },
         sumInterest() {
             return this.changeCurrency(movementsArr
@@ -349,8 +351,7 @@ btnTransferSubmit.addEventListener('click', (e) => {
                     if (Number(inputTransferAmount.value) <= currentBalance) {
                         accounts[inputTransferTo.value].movements.push([Number(inputTransferAmount.value), dateNow()])
                         currentUser.addBalance((Number(inputTransferAmount.value)) - (Number(inputTransferAmount.value) * 2));
-                        inputTransferAmount.value = '';
-                        inputTransferTo.value = '';
+                        inputTransferAmount.value = inputTransferTo.value = '';
                         showData(currentUser);
                     } else {
                         showNote('Your account balance is insufficient', 'error');
