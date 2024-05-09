@@ -46,8 +46,8 @@ let accounts = {
         currencyBalance: 'EUR',
         movements: [
             [200, '01/03/2000'],
-            [-400, '08/03/2024'],
-            [3000, '05/01/2024'],
+            [-400, '08/04/2024'],
+            [3000, '07/04/2024'],
             [-650, '09/02/2024'],
             [-130, '17/02/2022'],
             [70, '30/03/2020'],
@@ -61,10 +61,10 @@ let accounts = {
         movements: [
             [5000, '01/03/2000'],
             [3400, '12/02/2020'],
-            [-3210, '09/02/2024'],
+            [-3210, '07/04/2024'],
             [-1000, '17/02/2020'],
             [8500, '30/03/2020'],
-            [-30, '10/03/2024']
+            [-30, '05/04/2024']
         ],
         interestRate: 1.5,
         pin: '2222',
@@ -102,9 +102,9 @@ let timerSecond = 300;
 
 // Elements
 
-const dateNow = (splitChar = '/') => {
+const dateNow = () => {
     const date = new Date();
-    return date.getDate().toString().padStart(2, '0') + splitChar + date.getMonth().toString().padStart(2, '0') + splitChar + date.getFullYear();
+    return date.getDate().toString().padStart(2, '0') + '/' + date.getMonth().toString().padStart(2, '0') + '/' + date.getFullYear();
 };
 
 // App Functions
@@ -114,7 +114,7 @@ const get = function (account) {
     return {
         firstName: `${account.owner.split(' ')[0]}👋`,
         balance(arr = movementsArr) {
-            return this.changeCurrency(arr.reduce((acc, value) => acc + value, 0));
+            return this.changeCurrency(Math.abs(arr.reduce((acc, value) => acc + value, 0)));
         },
         changeCurrency(balance) {
             switch (currency) {
@@ -131,7 +131,7 @@ const get = function (account) {
             return this.balance(movementsArr.filter(value => value > 0));
         },
         sumOut() {
-            return this.balance(movementsArr.filter(value => value < 0)).slice(1);
+            return this.balance(movementsArr.filter(value => value < 0));
         },
         sumInterest() {
             return this.changeCurrency(movementsArr
@@ -152,12 +152,31 @@ const get = function (account) {
                 const movementContent = `
                 <div class="movements__row">
                     <div class="movements__type movements__type--${movementType}">${i + 1} ${movementType.toLocaleUpperCase()}</div>
-                    <div class="movements__date">${account.movements[i][1]}</div>
+                    <div class="movements__date">${this.calcDaysPassed(account.movements[i][1])}</div>
                     <div class="movements__value">${this.changeCurrency(value)}</div>
                 </div>
                 `;
                 containerMovements.insertAdjacentHTML('afterbegin', movementContent);
             })
+        },
+        calcDaysPassed(dateMov) {
+            const dateArr = dateMov.split('/').map(value => +value);
+            const daysPassed = Math.trunc((new Date() - new Date(dateArr[2], dateArr[1], dateArr[0])) / (1000 * 60 * 60 * 24));
+            switch (daysPassed) {
+                case 0:
+                    return "Today"
+                case 1:
+                    return "Yesterday"
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                    return `${daysPassed} days ago`
+                default:
+                    return dateMov
+            }
         },
         addBalance(amount) {
             account.movements.push([parseFloat(amount), dateNow()]);
@@ -173,7 +192,6 @@ const get = function (account) {
         }
     }
 }
-
 const showData = function (currentUser) {
     currentUser.showMovements();
     labelSumIn.innerHTML = currentUser.sumIn();
@@ -342,13 +360,13 @@ btnTransferSubmit.addEventListener('click', (e) => {
     if (inputTransferTo.value !== '') {
         if (inputTransferAmount.value !== '') {
             if (accounts[inputTransferTo.value]) {
-                if (Number(inputTransferAmount.value) <= 0) {
+                if (+inputTransferAmount.value <= 0) {
                     showNote('Please enter a suitable and calculable amount', 'warn');
                 } else {
                     const currentBalance = (currentUser.balance().slice(0, currentUser.balance().indexOf('&')));
-                    if (Number(inputTransferAmount.value) <= currentBalance) {
-                        accounts[inputTransferTo.value].movements.push([Number(inputTransferAmount.value), dateNow()])
-                        currentUser.addBalance((Number(inputTransferAmount.value)) - (Number(inputTransferAmount.value) * 2));
+                    if (+inputTransferAmount.value <= currentBalance) {
+                        accounts[inputTransferTo.value].movements.push([+inputTransferAmount.value, dateNow()])
+                        currentUser.addBalance((+inputTransferAmount.value) - (+inputTransferAmount.value * 2));
                         inputTransferAmount.value = '';
                         inputTransferTo.value = '';
                         showData(currentUser);
