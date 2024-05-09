@@ -35,15 +35,11 @@ const btnTransferSubmit = formTransfer.querySelector('.form__btn--transfer');
 
 const timerElm = $.querySelector('.logout-timer .timer');
 // Data
-const currencies = {
-    USD: '&#36;',
-    EUR: '&euro;',
-    GBP: '&pound;'
-}
 let accounts = {
     js: {
         owner: 'Jonas Schmedtmann',
-        currencyBalance: 'EUR',
+        currencyBalance: 'USD',
+        locale: 'en-US',
         movements: [
             [200, '01/03/2000'],
             [-400, '08/04/2024'],
@@ -57,7 +53,8 @@ let accounts = {
     },
     jd: {
         owner: 'Jessica Davis',
-        currencyBalance: 'USD',
+        currencyBalance: 'GBP',
+        locale: 'en-UK',
         movements: [
             [5000, '01/03/2000'],
             [3400, '12/02/2020'],
@@ -71,7 +68,8 @@ let accounts = {
     },
     stw: {
         owner: 'Steven Thomas Williams',
-        currencyBalance: 'USD',
+        currencyBalance: 'GBP',
+        locale: 'en-UK',
         movements: [
             [200, '01/03/2000'],
             [-200, '10/02/2020'],
@@ -86,6 +84,7 @@ let accounts = {
     ss: {
         owner: 'Sarah Smith',
         currencyBalance: 'USD',
+        locale: 'en-US',
         movements: [
             [430, '01/03/2000'],
             [1000, '05/01/2024'],
@@ -99,13 +98,6 @@ let accounts = {
 }
 let currentUser;
 let timerSecond = 300;
-
-// Elements
-
-const dateNow = () => {
-    const date = new Date();
-    return date.getDate().toString().padStart(2, '0') + '/' + date.getMonth().toString().padStart(2, '0') + '/' + date.getFullYear();
-};
 
 // App Functions
 const get = function (account) {
@@ -125,7 +117,10 @@ const get = function (account) {
                     balance *= 0.92;
                     break;
             }
-            return balance.toFixed(2) + currencies[currency];
+            return new Intl.NumberFormat(account.locale, {
+                style: 'currency',
+                currency: currency
+            }).format(balance);
         },
         sumIn() {
             return this.balance(movementsArr.filter(value => value > 0));
@@ -179,7 +174,7 @@ const get = function (account) {
             }
         },
         addBalance(amount) {
-            account.movements.push([parseFloat(amount), dateNow()]);
+            account.movements.push([parseFloat(amount), this.dateNow()]);
             movementsArr = [...account.movements.values()].map(movement => movement[0]);
             setData('userTarget', account);
         },
@@ -189,6 +184,14 @@ const get = function (account) {
             currentUser = get(account);
             setData('userTarget', account);
             showData(currentUser);
+        },
+        dateNow() {
+            const options = {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            };
+            return new Intl.DateTimeFormat(account.locale, options).format(new Date());
         }
     }
 }
@@ -198,7 +201,7 @@ const showData = function (currentUser) {
     labelSumOut.innerHTML = currentUser.sumOut();
     labelSumInterest.innerHTML = currentUser.sumInterest();
     labelBalance.innerHTML = currentUser.balance();
-    labelDate.innerHTML = dateNow();
+    labelDate.innerHTML = currentUser.dateNow();
 }
 const showNote = function (message = 'this is Notification', state = 'info') {
     const noteDiv = $.querySelector(".notification");
@@ -225,7 +228,6 @@ const showNote = function (message = 'this is Notification', state = 'info') {
 
     }
 }
-
 const setData = function (key, item) {
     localStorage.setItem(key, JSON.stringify(item));
     localStorage.setItem('accounts', JSON.stringify(accounts));
@@ -365,7 +367,7 @@ btnTransferSubmit.addEventListener('click', (e) => {
                 } else {
                     const currentBalance = (currentUser.balance().slice(0, currentUser.balance().indexOf('&')));
                     if (+inputTransferAmount.value <= currentBalance) {
-                        accounts[inputTransferTo.value].movements.push([+inputTransferAmount.value, dateNow()])
+                        accounts[inputTransferTo.value].movements.push([+inputTransferAmount.value, currentUser.dateNow()])
                         currentUser.addBalance((+inputTransferAmount.value) - (+inputTransferAmount.value * 2));
                         inputTransferAmount.value = '';
                         inputTransferTo.value = '';
